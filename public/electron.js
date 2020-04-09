@@ -8,7 +8,8 @@ function createWindow() {
     mainWindow = new electron_1.BrowserWindow({
         resizable: true,
         webPreferences: {
-            nodeIntegration: true
+            nodeIntegration: true,
+            webSecurity: false
         }
     });
     if (isDev) {
@@ -22,6 +23,7 @@ function createWindow() {
         mainWindow = undefined;
     });
 }
+electron_1.app.allowRendererProcessReuse = true;
 electron_1.app.on('ready', createWindow);
 electron_1.app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') {

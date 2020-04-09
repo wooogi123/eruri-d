@@ -8,7 +8,8 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     resizable: true,
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
+      webSecurity: false,
     }
   });
 
@@ -24,6 +25,7 @@ function createWindow() {
   });
 }
 
+app.allowRendererProcessReuse = true;
 app.on('ready', createWindow);
 
 app.on('window-all-closed', () => {
