@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useCourseState } from '../../contexts/CourseContext';
 import { Vodlist } from '../../libs/parser';
 
@@ -9,30 +9,38 @@ interface ListProps {
 
 function List({ onClick, vodlist }: ListProps) {
   const courses = useCourseState();
+  const [src, setSrc] = useState('');
+
   return (
-    <section>
-      <ul>
-        {courses.map((el, idx) => (
-          <li key={idx}>
-            <button data-url={el.url} onClick={onClick}>
-              {el.title} | {el.prof}
-            </button>
-          </li>
-        ))}
-      </ul>
-      <ul>
-        {vodlist.map((el, idx) => (
-          <li key={idx}>
-            <label>{el.title}</label>
-            <ul>
-              {el.vods.map((el, idx) => (
-                <li><button key={idx}>{el}</button></li>
-              ))}
-            </ul>
-          </li>
-        ))}
-      </ul>
-    </section>
+    <div>
+      <section>
+        <ul>
+          {courses.map((el, idx) => (
+            <li key={idx}>
+              <button data-url={el.url} onClick={onClick}>
+                {el.title} | {el.prof}
+              </button>
+            </li>
+          ))}
+        </ul>
+        <ul>
+          {vodlist.map((el, idx) => (
+            <li key={idx}>
+              <label>{el.title}</label>
+              <ul>
+                {el.vods.map((el, idx) => (
+                  <li>
+                    <button key={idx}>
+                      {el}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </div>
   );
 }
 
