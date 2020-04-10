@@ -1,7 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
-import { Course } from '../../libs/parser';
 
 const Header = styled.header`
   margin: 10% 0;
@@ -25,10 +23,9 @@ interface AuthFormProps {
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   user: User;
   setUser: React.ComponentState;
-  list: Array<Course>;
 }
 
-function AuthForm({ onSubmit, user, setUser, list }: AuthFormProps) {
+function AuthForm({ onSubmit, user, setUser }: AuthFormProps) {
   return (
     <div>
       <Header>
@@ -50,24 +47,6 @@ function AuthForm({ onSubmit, user, setUser, list }: AuthFormProps) {
           <button>Submit</button>
         </Form>
       </Header>
-      <section>
-        <ul>
-          {list.map((el, idx) => (
-            <li key={idx}>
-              <Link
-                to={{
-                  pathname: '/view',
-                  state: {
-                    title: el.title,
-                    prof: el.prof,
-                    url: el.url
-                  }}}>
-                {el.title} {el.prof}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </section>
     </div>
   );
 }

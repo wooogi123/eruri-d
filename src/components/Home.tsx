@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 import axios from 'axios';
-import { courseListParser, Course } from '../libs/parser';
+import { courseListParser } from '../libs/parser';
 import AuthForm from './auth/AuthForm';
+import { useCourseDispatch } from '../contexts/CourseContext';
 
-function Home() {
+function Home({ history }: RouteComponentProps) {
   const local = localStorage.getItem('user');
   const [user, setUser] = useState((local) ? JSON.parse(local) : { id: '', pw: '' });
-  const initList: Array<Course> = [];
-  const [list, setList] = useState(initList);
+  const dispatch = useCourseDispatch();
 
   const URL = 'https://eruri.kangwon.ac.kr/login/index.php';
   const _URL = 'https://eruri.kangwon.ac.kr/login.php';
@@ -31,7 +32,15 @@ function Home() {
         method: 'get',
         withCredentials: true
       });
-      setList(courseListParser(reRes.data));
+      courseListParser(reRes.data).forEach(el => {
+        dispatch({
+          type: 'LOGIN',
+          title: el.title,
+          prof: el.prof,
+          url: el.url,
+        });
+      });
+      history.push('/view');
     } catch (err) {
       console.error(err);
     }
@@ -42,7 +51,6 @@ function Home() {
       onSubmit={onSubmit}
       user={user}
       setUser={setUser}
-      list={list}
     />
   );
 };

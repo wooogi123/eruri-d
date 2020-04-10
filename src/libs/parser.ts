@@ -23,7 +23,27 @@ export function courseListParser(data: string) {
   return ret;
 }
 
+export interface Vodlist {
+  title: string;
+  vods: Array<string>;
+}
+
 export function videoListParser(data: string) {
-  let ret: Array<string> = [];
+  let ret: Array<Vodlist> = [];
+  const $ = cheerio.load(data);
+  for (let i = 0; i < 16; i++) {
+    let arr: Array<string> = [];
+    const week = $(`div.total_sections li#section-${i} div.content`);
+    const name = $(week).find('h3').text();
+    const vod = $(week).find('li.modtype_vod a:not(.autolink)');
+    if (vod.length === 0) continue;
+    vod.each((_, el) => {
+      arr.push(el.attribs['href'].replace('view', 'viewer'));
+    });
+    ret.push({
+      title: name,
+      vods: arr
+    });
+  }
   return ret;
 }
