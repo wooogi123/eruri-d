@@ -1,4 +1,5 @@
 import cheerio from 'cheerio';
+import axios from 'axios';
 
 export interface Course {
   title?: string;
@@ -46,4 +47,15 @@ export function videoListParser(data: string) {
     });
   }
   return ret;
+}
+
+export async function getPlaylist(url: string) {
+  const reg = /file: '(https:.*?)'/;
+  const res = await axios({
+    url: url,
+    method: 'get',
+    withCredentials: true
+  });
+  const data = res.data.match(reg);
+  return data;
 }

@@ -17,7 +17,11 @@
     "noEmit": true,
     "jsx": "react",
     "esModuleInterop": true,
-    "module": "esnext"
+    "module": "esnext",
+    "typeRoots": [
+      "./@types",
+      "./node_modules/@types"
+    ]
   },
   "include": [
     "src",
