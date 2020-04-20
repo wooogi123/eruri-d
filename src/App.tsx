@@ -8,7 +8,7 @@ function App() {
   return (
     <BrowserRouter>
       <CourseContextProvider>
-        <Route path='/' component={Home} />
+        <Route exact path='/' component={Home} />
         <Route path='/view' component={View} />
       </CourseContextProvider>
     </BrowserRouter>

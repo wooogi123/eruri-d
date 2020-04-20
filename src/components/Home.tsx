@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { BrowserRouter as Router, RouteComponentProps } from 'react-router-dom';
 import axios from 'axios';
 import { courseListParser } from '../libs/parser';
 import AuthForm from './auth/AuthForm';
@@ -16,7 +16,7 @@ function Home({ history }: RouteComponentProps) {
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     try {
-      const res = await axios({
+      let res = await axios({
         url: URL,
         data: `username=${user.id}&password=${user.pw}`,
         method: 'post',
@@ -27,12 +27,12 @@ function Home({ history }: RouteComponentProps) {
         throw new Error('Login Failure');
       }
       localStorage.setItem('user', JSON.stringify(user));
-      const reRes = await axios({
+      res = await axios({
         url: resURL,
         method: 'get',
         withCredentials: true
       });
-      courseListParser(reRes.data).forEach(el => {
+      courseListParser(res.data).forEach(el => {
         dispatch({
           type: 'LOGIN',
           title: el.title,
@@ -47,11 +47,13 @@ function Home({ history }: RouteComponentProps) {
   }
 
   return (
-    <AuthForm
-      onSubmit={onSubmit}
-      user={user}
-      setUser={setUser}
-    />
+    <Router>
+      <AuthForm
+        onSubmit={onSubmit}
+        user={user}
+        setUser={setUser}
+      />
+    </Router>
   );
 };
 

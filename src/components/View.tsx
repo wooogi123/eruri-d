@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
 import axios from 'axios';
 import List from './course/List';
 import { Vodlist, videoListParser } from '../libs/parser';
@@ -25,7 +26,9 @@ function View() {
   }
 
   return (
-    <List onClick={onClick} vodlist={vodlist} />
+    <Router>
+      <List onClick={onClick} vodlist={vodlist} />
+    </Router>
   );
 }
 
