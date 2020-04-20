@@ -1,59 +1,71 @@
 "use strict";
+
 exports.__esModule = true;
-var electron_1 = require("electron");
-var isDev = require("electron-is-dev");
-var path = require("path");
-var child_process_1 = require("child_process");
-var any_shell_escape_1 = require("any-shell-escape");
-var path = require('path');
-var fs = require('fs');
-var mainWindow;
+const electron = require('electron');
+const isDev = require('electron-is-dev');
+const path = require('path');
+const fs = require('fs');
+const ffmpeg = require('fluent-ffmpeg');
+const pathToFfmpeg = require('ffmpeg-static');
+
+ffmpeg.setFfmpegPath(pathToFfmpeg);
+
+const app = electron.app;
+const ipcMain = electron.ipcMain;
+
+let mainWindow;
+
+const dir = path.join(process.cwd(), 'videos');
+!fs.existsSync(dir) && fs.mkdirSync(dir);
+
 function createWindow() {
-    mainWindow = new electron_1.BrowserWindow({
-        resizable: true,
-        webPreferences: {
-            nodeIntegration: true,
-            webSecurity: false
-        }
-    });
-    if (isDev) {
-        mainWindow.loadURL('http://localhost:3000');
-        mainWindow.webContents.openDevTools();
+  mainWindow = new electron.BrowserWindow({
+    resizable: true,
+    webPreferences: {
+      nodeIntegration: true,
+      webSecurity: false,
     }
-    else {
-        mainWindow.loadFile(path.join(__dirname, '../build/index.html'));
-    }
-    mainWindow.on('closed', function () {
-        mainWindow = undefined;
-    });
+  });
+
+  if (isDev) {
+    mainWindow.loadURL('http://localhost:3000');
+    mainWindow.webContents.openDevTools();
+  } else {
+    mainWindow.loadFile(path.join(__dirname, '../build/index.html'));
+  }
+
+  mainWindow.on('closed', () => {
+    mainWindow = undefined;
+  });
 }
-electron_1.ipcMain.on('asynchronous-message', function (e, arg) {
-    var dir = path.join(process.cwd(), "/videos");
-    !fs.existsSync(dir) && fs.mkdirSync(dir);
-    var downloadVideo = any_shell_escape_1([
-        path.join(process.cwd(), "/ffmpeg"),
-        '-i', arg[1], '-c', 'copy',
-        path.join(dir, arg[0] + ".ts")
-    ]);
-    console.log(arg);
-    child_process_1.exec(downloadVideo, function (err) {
-        if (err) {
-            e.reply('asynchronous-reply', err);
-        }
-        else {
-            e.reply('asynchronous-reply', 'done');
-        }
-    });
+
+ipcMain.on('download-message', (e, arg) => {
+  new ffmpeg(arg[1])
+    .on('start', () => {
+      e.reply('download-start', 'start');
+    })
+    .on('progress', (progress) => {
+      e.reply('download-progress', progress);
+    })
+    .on('error', (err) => {
+      e.reply('download-error', err.message);
+    })
+    .on('end', () => {
+      e.reply('download-end', 'end');
+    })
+    .save(path.join('videos', `${arg[0]}.ts`));
 });
-electron_1.app.allowRendererProcessReuse = true;
-electron_1.app.on('ready', createWindow);
-electron_1.app.on('window-all-closed', function () {
-    if (process.platform !== 'darwin') {
-        electron_1.app.quit();
-    }
+
+app.allowRendererProcessReuse = true;
+app.on('ready', createWindow);
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    electron.app.quit();
+  }
 });
-electron_1.app.on('activate', function () {
-    if (mainWindow === null) {
-        createWindow();
-    }
+
+app.on('activate', () => {
+  if (mainWindow === null) {
+    createWindow();
+  }
 });

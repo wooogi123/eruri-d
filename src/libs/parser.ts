@@ -50,7 +50,7 @@ export function videoListParser(data: string) {
 }
 
 export async function getPlaylist(url: string) {
-  const reg = /file: '(https:.*?)'/;
+  const reg = /file: '(https?:.*?)'/;
   const res = await axios({
     url: url,
     method: 'get',

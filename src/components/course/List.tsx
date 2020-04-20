@@ -2,39 +2,48 @@ import React, { useState } from 'react';
 import { useCourseState } from '../../contexts/CourseContext';
 import { Vodlist, getPlaylist } from '../../libs/parser';
 import styled from '@emotion/styled';
+import { IpcRendererEvent } from 'electron';
+
+const ipcRenderer = window.require('electron').ipcRenderer;
 
 const Alert = styled.h1`
   color: red;
 `
-
-const ipcRenderer = window.require('electron').ipcRenderer;
-
 interface ListProps {
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   vodlist: Array<Vodlist>;
 }
 
+interface DownloadProgress {
+  frames: string;
+  currentFps: string;
+  currentKbps: string;
+  targetSize: string;
+  timemark: string;
+}
+
 function List({ onClick, vodlist }: ListProps) {
   const courses = useCourseState();
-  const [load, setLoad] = useState(false);
-  const [error, setError] = useState(undefined);
+  const [timemark, setTimemark] = useState('');
 
   async function onButtonClick(e: React.MouseEvent<HTMLButtonElement>) {
     let url = e.currentTarget.dataset['url'] as string;
     const title = e.currentTarget.dataset['name'];
-    setLoad(true);
     url = await getPlaylist(url);
-    ipcRenderer.on('asynchronous-reply', (e, arg) => {
-      if (arg == 'done') {
-        setLoad(false);
-      } else {
-        setLoad(false)
-        setError(arg);
-      }
+    ipcRenderer.on('download-start', (e: IpcRendererEvent, arg: string) => {
       console.log(arg);
-      setLoad(false);
     });
-    ipcRenderer.send('asynchronous-message', [title, url[1]]);
+    ipcRenderer.on('download-progress', (e: IpcRendererEvent, arg: DownloadProgress) => {
+      console.log(arg);
+      setTimemark(arg.timemark);
+    });
+    ipcRenderer.on('download-error', (e: IpcRendererEvent, arg: string) => {
+      console.log(arg);
+    })
+    ipcRenderer.on('download-end', (e: IpcRendererEvent, arg: string) => {
+      console.log(arg);
+    })
+    ipcRenderer.send('download-message', [title, url[1]]);
   }
 
   return (
@@ -49,8 +58,6 @@ function List({ onClick, vodlist }: ListProps) {
             </li>
           ))}
         </ul>
-        {load && <Alert>Download...</Alert>}
-        {error && <Alert>{error}</Alert>}
         <ul>
           {vodlist.map((el, idx) => (
             <li key={idx}>
@@ -58,6 +65,7 @@ function List({ onClick, vodlist }: ListProps) {
               <ul>
                 {el.vods.map((elm, idx) => (
                   <li>
+                    {timemark && <Alert>{timemark}</Alert>}
                     <button
                       key={el.title + (' - ') + (idx+1)}
                       data-url={elm}
