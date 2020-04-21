@@ -1,6 +1,6 @@
 {
   "name": "eruri-d",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "main": "public/electron.js",
   "homepage": "./",
@@ -40,6 +40,15 @@
     "start": "concurrently \"cross-env BROWSER=none npm run start:react\" \"wait-on http://localhost:3000 && electron .\"",
     "build": "npm run build:react && electron-builder",
     "release": "npm run build:react && electron-builder --publish=always"
+  },
+  "build": {
+    "productName": "eruri-d",
+    "asar": false,
+    "win": {
+      "target": [
+        "zip"
+      ]
+    }
   },
   "eslintConfig": {
     "extends": "react-app"

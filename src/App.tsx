@@ -1,17 +1,19 @@
 import React from 'react';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { HashRouter as Router, Route } from 'react-router-dom';
 import Home from './components/Home';
 import View from './components/View';
-import { CourseContextProvider } from './contexts/CourseContext';
+import { CourseContextProvider, DownloadContextProvider } from './contexts/CourseContext';
 
 function App() {
   return (
-    <BrowserRouter>
+    <Router>
       <CourseContextProvider>
         <Route exact path='/' component={Home} />
-        <Route path='/view' component={View} />
+        <DownloadContextProvider>
+          <Route path='/view' component={View} />
+        </DownloadContextProvider>
       </CourseContextProvider>
-    </BrowserRouter>
+    </Router>
   );
 }
 

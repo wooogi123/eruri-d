@@ -42,17 +42,16 @@ function createWindow() {
 ipcMain.on('download-message', (e, arg) => {
   new ffmpeg(arg[1])
     .on('start', () => {
-      e.reply('download-start', 'start');
-    })
-    .on('progress', (progress) => {
-      e.reply('download-progress', progress);
+      e.reply('download-start', { target: arg[0], msg: '' });
     })
     .on('error', (err) => {
-      e.reply('download-error', err.message);
+      e.reply('download-error', { target: arg[0], msg: err.message });
     })
     .on('end', () => {
-      e.reply('download-end', 'end');
+      e.reply('download-end', { target: arg[0], msg: '' });
     })
+    .videoCodec('copy')
+    .audioCodec('copy')
     .save(path.join('videos', `${arg[0]}.ts`));
 });
 

@@ -30,6 +30,10 @@ const Input = styled.input`
   font-size: 14px;
 `;
 
+const Error = styled.h1`
+  color: red;
+`;
+
 const Button = styled.button`
   text-transform: uppercase;
   outline: 0;
@@ -57,9 +61,10 @@ interface AuthFormProps {
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   user: User;
   setUser: React.ComponentState;
+  error: boolean;
 }
 
-function AuthForm({ onSubmit, user, setUser }: AuthFormProps) {
+function AuthForm({ onSubmit, user, setUser, error }: AuthFormProps) {
   return (
     <LoginWrapper>
       <Form onSubmit={onSubmit}>
@@ -77,6 +82,7 @@ function AuthForm({ onSubmit, user, setUser }: AuthFormProps) {
           type='password'
           onChange={(e) => {setUser({ ...user, pw: e.target.value })}}
         />
+        {error && <Error>Login Failure</Error>}
         <Button>Login</Button>
       </Form>
     </LoginWrapper>

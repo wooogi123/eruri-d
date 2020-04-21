@@ -8,6 +8,7 @@ import { useCourseDispatch } from '../contexts/CourseContext';
 function Home({ history }: RouteComponentProps) {
   const local = localStorage.getItem('user');
   const [user, setUser] = useState((local) ? JSON.parse(local) : { id: '', pw: '' });
+  const [error, setError] = useState(false);
   const dispatch = useCourseDispatch();
 
   const URL = 'https://eruri.kangwon.ac.kr/login/index.php';
@@ -43,6 +44,7 @@ function Home({ history }: RouteComponentProps) {
       history.push('/view');
     } catch (err) {
       console.error(err);
+      setError(true);
     }
   }
 
@@ -52,6 +54,7 @@ function Home({ history }: RouteComponentProps) {
         onSubmit={onSubmit}
         user={user}
         setUser={setUser}
+        error={error}
       />
     </Router>
   );
