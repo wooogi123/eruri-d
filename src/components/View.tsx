@@ -1,23 +1,9 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import axios from 'axios';
-import styled from '@emotion/styled';
-import List from './course/List';
+import CourseList from './course/CourseList';
 import ListCard from './course/ListCard';
 import { Vodlist, videoListParser } from '../libs/parser';
-
-const Wrapper = styled.section`
-  display: flex;
-  height: 100%;
-`;
-
-const DivFlex = styled.div`
-  flex: 1;
-
-  & + & {
-    border-left: 1px solid #ffffff;
-  }
-`;
 
 function View() {
   const initlist: Array<Vodlist> = [{
@@ -42,14 +28,19 @@ function View() {
 
   return (
     <Router>
-      <Wrapper>
-        <DivFlex>
-          <List onClick={onClick} />
-        </DivFlex>
-        <DivFlex>
+      <section
+        style={{
+          display: 'flex',
+          height: '100%',
+        }}
+      >
+        <div style={{ flex: 1 }}>
+          <CourseList onClick={onClick} />
+        </div>
+        <div style={{ flex: 1 }}>
           <ListCard vodList={vodlist} />
-        </DivFlex>
-      </Wrapper>
+        </div>
+      </section>
     </Router>
   );
 }
