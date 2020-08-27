@@ -1,56 +1,5 @@
 import React from 'react';
-import styled from '@emotion/styled';
-
-const LoginWrapper = styled.div`
-  width: 260px;
-  padding: 8% 0 0;
-  margin: auto;
-`;
-
-const Form = styled.form`
-  position: relative;
-  z-index: 1;
-  background: #ffffff;
-  max-width: 360px;
-  margin: 0 auto 100px;
-  padding: 45px;
-  text-align: center;
-  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
-`;
-
-const Input = styled.input`
-  outline: 0;
-  background: #f2f2f2;
-  width: 100%;
-  border: 1px solid #a0aec0;
-  border-radius: 0.25rem;
-  margin: 0 0 15px;
-  padding: 15px;
-  box-sizing: border-box;
-  font-size: 14px;
-`;
-
-const Error = styled.h1`
-  color: red;
-`;
-
-const Button = styled.button`
-  text-transform: uppercase;
-  outline: 0;
-  background: #805ad5;
-  width: 100%;
-  border: 0;
-  border-radius: 0.25rem;
-  padding: 15px;
-  color: #ffffff;
-  font-size: 14px;
-  transition: all 0.3 ease;
-  cursor: pointer;
-
-  &:hover, &:active, &:focus {
-    background: #6b46c1;
-  }
-`;
+import { Frame, Button } from 'arwes';
 
 interface User {
   id: string;
@@ -66,26 +15,60 @@ interface AuthFormProps {
 
 function AuthForm({ onSubmit, user, setUser, error }: AuthFormProps) {
   return (
-    <LoginWrapper>
-      <Form onSubmit={onSubmit}>
-        <Input
+    <Frame
+      animate={true}
+      level={3}
+      corners={4}
+      layer={'primary'}
+      style={{
+        width: '260px',
+        margin: '10% auto',
+      }}
+    >
+      <form
+        onSubmit={onSubmit}
+        style={{
+          padding: '40px',
+          textAlign: 'center',
+        }}
+      >
+        <input
           name='id'
           placeholder='Username'
           value={user.id}
           type='text'
           onChange={(e) => {setUser({ ...user, id: e.target.value })}}
+          style={{
+            outline: 0,
+            width: '100%',
+            margin: '0 0 15px',
+            padding: '15px',
+            fontSize: '14px',
+          }}
         />
-        <Input
+        <input
           name='pw'
           placeholder='Password'
           value={user.pw}
           type='password'
           onChange={(e) => {setUser({ ...user, pw: e.target.value })}}
+          style={{
+            outline: 0,
+            width: '100%',
+            margin: '0 0 15px',
+            padding: '15px',
+            fontSize: '14px',
+          }}
         />
-        {error && <Error>Login Failure</Error>}
-        <Button>Login</Button>
-      </Form>
-    </LoginWrapper>
+        <Button
+          animate
+          layer={error ? 'alert' : 'success'}
+          style={{ width: '100%' }}
+        >
+          Login
+        </Button>
+      </form>
+    </Frame>
   );
 }
 

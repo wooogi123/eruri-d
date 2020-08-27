@@ -1,15 +1,11 @@
 import React from 'react';
-import styled from '@emotion/styled';
+import { Words } from 'arwes';
 import Course from './Course';
 import { Vodlist, getPlaylist } from '../../libs/parser';
 import { useDownloadState, useDownloadDispatch } from '../../contexts/CourseContext';
 
 import { IpcRendererEvent } from 'electron';
 const ipcRenderer = window.require('electron').ipcRenderer;
-
-const Alert = styled.h1`
-  color: red;
-`;
 
 interface ListCardProps {
   vodList: Array<Vodlist>;
@@ -23,6 +19,7 @@ interface IpcArgs {
 function ListCard({ vodList }: ListCardProps) {
   const dispatch = useDownloadDispatch();
   const state = useDownloadState();
+
   async function onClick(e: React.MouseEvent<HTMLLIElement>) {
     let url = e.currentTarget.dataset['url'] as string;
     const title = e.currentTarget.dataset['name'];
@@ -68,7 +65,7 @@ function ListCard({ vodList }: ListCardProps) {
       </ul>
     );
   }
-  return (<Alert>Empty</Alert>);
+  return (<Words layer='alert'>Empty</Words>)
 }
 
 export default ListCard;
